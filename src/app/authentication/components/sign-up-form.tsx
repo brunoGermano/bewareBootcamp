@@ -2,7 +2,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -23,6 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 
 //Creates a schema for a form object. Using Object validation using zod library
 const formSchema = z
@@ -48,6 +51,7 @@ const formSchema = z
 type Formvalues = z.infer<typeof formSchema>;
 
 const SignUpForm = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -59,9 +63,29 @@ const SignUpForm = () => {
   });
 
   // 2. Define a submit handler. It is always Executed when the form were validated
-  function onSubmit(values: Formvalues) {
-    console.log("FORMULÁRIO VÁLIDO ENVIADO!");
-    console.log(values);
+  async function onSubmit(values: Formvalues) {
+    await authClient.signUp.email({
+      name: values.name, // required
+      email: values.email, // required
+      password: values.password,
+      fetchOptions: {
+        onSuccess: () => {
+          // toast.success("Conta criada com sucesso!");
+          router.push("/");
+        },
+        onError: (error) => {
+          if (
+            error.error.code === authClient.$ERROR_CODES.USER_ALREADY_EXISTS
+          ) {
+            toast.success("E-mail já cadastrado.");
+            form.setError("email", {
+              message: "E-mail já cadastrado.",
+            });
+          }
+          toast.success(error.error.message);
+        },
+      },
+    });
   }
 
   return (
