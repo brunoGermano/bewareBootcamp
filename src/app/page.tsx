@@ -1,10 +1,13 @@
+import { desc } from "drizzle-orm";
 import Image from "next/image";
 
 import CategorySelector from "@/components/common/category-selector";
+import Footer from "@/components/common/footer";
 import { Header } from "@/components/common/header";
 import ProductList from "@/components/common/product-list";
 import { Button } from "@/components/ui/button";
 import { db } from "@/db";
+import { productTable } from "@/db/schema";
 
 const Home = async () => {
   const products = await db.query.productTable.findMany({
@@ -13,6 +16,13 @@ const Home = async () => {
     },
   });
   // console.log(products); // This console.log appears in this cursor console because this component is running on the server, in other words, "Home" is a "ServerComponent". So this log appears on the developing console and not on the google console which is the front end, "ClientComponent" in this case.
+
+  const newlyCreatedProducts = await db.query.productTable.findMany({
+    orderBy: [desc(productTable.createdAt)], // first the big one and so on.
+    with: {
+      variants: true,
+    },
+  });
 
   const categories = await db.query.categoryTable.findMany({});
 
@@ -47,6 +57,9 @@ const Home = async () => {
             className="h-auto w-full"
           />
         </div>
+
+        <ProductList products={newlyCreatedProducts} title="Novos produtos" />
+        <Footer />
       </div>
     </>
   );
