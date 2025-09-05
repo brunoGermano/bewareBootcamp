@@ -25,8 +25,15 @@ export const userTable = pgTable("user", {
 });
 
 // User can have multiple shipping addresses
-export const userRelations = relations(userTable, ({ many }) => ({
+export const userRelations = relations(userTable, ({ many, one }) => ({
+  // A "User" can have many "shippingAddress".
   shippingAddress: many(shippingAddressTable),
+
+  // A "User" can have only ONE cart on the "cartTable" table.
+  cart: one(cartTable, {
+    fields: [userTable.id],
+    references: [cartTable.userId],
+  }),
 }));
 
 export const sessionTable = pgTable("session", {
@@ -153,12 +160,72 @@ export const shippingAddressTable = pgTable("shipping-address", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const shippingAddresRealtions = relations(
+export const shippingAddressRelations = relations(
+  // The table "shippingAddressTable" have two "one()" relations, these relations are with "userTable" and "cartTable" tables.
+
   shippingAddressTable,
   ({ one }) => ({
     user: one(userTable, {
       fields: [shippingAddressTable.userId],
       references: [userTable.id],
     }),
+
+    // A shippingAddress always belongs to a cart no more than one. Therefore, a user only has a cart in our app.
+    cart: one(cartTable, {
+      fields: [shippingAddressTable.id],
+      references: [cartTable.shippingAddressId],
+    }),
   }),
 );
+
+export const cartTable = pgTable("cart", {
+  id: uuid().primaryKey().defaultRandom(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => userTable.id, { onDelete: "cascade" }),
+  shippingAddressId: uuid("shipping_address_id").references(
+    () => shippingAddressTable.id,
+    { onDelete: "set null" },
+  ),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const cartRelations = relations(cartTable, ({ many, one }) => ({
+  // The "user" references the "userTable" creating the "userId" on the "cartTable" table
+  user: one(userTable, {
+    fields: [cartTable.userId],
+    references: [userTable.id],
+  }),
+  // The "shippingAddress" references the "shippingAddressTable" creating the "shippingAddressId" on the "cartTable" table
+  shippingAddress: one(shippingAddressTable, {
+    fields: [cartTable.shippingAddressId],
+    references: [shippingAddressTable.id],
+  }),
+
+  // A cart will have many items
+  items: many(cartItemTable),
+}));
+
+export const cartItemTable = pgTable("cart_item", {
+  // An item belongs to a cart, and if the cart is deleted, the item must also be deleted.
+  id: uuid().primaryKey().defaultRandom(),
+  cartId: uuid("cart_id")
+    .notNull()
+    .references(() => cartTable.id, { onDelete: "cascade" }),
+  productVariantId: uuid("product_variant_id")
+    .notNull()
+    .references(() => productVariantTable.id, { onDelete: "cascade" }),
+  quantity: integer("quantity").notNull().default(1),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const cartItemRelations = relations(cartItemTable, ({ one }) => ({
+  cart: one(cartTable, {
+    fields: [cartItemTable.cartId],
+    references: [cartTable.id],
+  }),
+  productVariant: one(productVariantTable, {
+    fields: [cartItemTable.productVariantId],
+    references: [productVariantTable.id],
+  }),
+}));

@@ -81,7 +81,7 @@ const ProductVariantPage = async ({ params }: ProductVariantPageProps) => {
           {/* QUANTIDADE */}
           <QuantitySelector />
         </div>
-        <div className="px-5">
+        <div className="flex flex-col space-y-4 px-5">
           {/* BUTTONS */}
           <Button className="rounded-full" size="lg" variant="outline">
             Adicionar à sacola

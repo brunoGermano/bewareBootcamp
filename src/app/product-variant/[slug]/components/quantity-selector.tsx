@@ -6,13 +6,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const QuantitySelector = () => {
-  const [quantity, setQuantity] = useState;
+  const [quantity, setQuantity] = useState(1);
 
   const handleDecrement = () => {
-    setQuantity((prev: number) => (prev > 1 ? prev - 1 : prev));
+    setQuantity((prev) => (prev > 1 ? prev - 1 : prev));
   };
   const handleIncrement = () => {
-    setQuantity((prev: number) => prev + 1);
+    setQuantity((prev) => prev + 1);
   };
 
   return (
