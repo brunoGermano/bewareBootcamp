@@ -48,6 +48,7 @@ export const getCart = async () => {
   }
   return {
     ...cart,
+    // Calc about financial datas must be done on the backend, so it is made here on this SERVER COMPONENT "getCart".
     totalPriceInCents: cart.items.reduce(
       (acc, item) => acc + item.productVariant.priceInCents * item.quantity,
       0,
