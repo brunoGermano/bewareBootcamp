@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ShoppingBasketIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 import { getCart } from "@/actions/get-cart";
 import { formatCentsToBRL } from "@/helpers/money";
@@ -22,12 +23,22 @@ import CartItem from "./cart-item";
 const Cart = () => {
   // Using the react-query here, uses like a father on the layout.tsx from app folder
   // A query is a call that obtain datas
-  const { data: cart, isPending: cartIsLoading } = useQuery({
+  const {
+    data: cart,
+    isPending: cartIsLoading,
+    isError,
+  } = useQuery({
     queryKey: ["cart"],
 
-    // "queryFn" is a function that fetch the datas from the cart. Since a "serverAction" is a kind of HTTP route accssing an API, so It is possible call "getCart()" here because it is a "serverAction".
+    // "queryFn" is a function that fetch the datas from the cart which is in the server since this file is a "client component".
+    //  Since a "serverAction" is a kind of HTTP route accssing an API, so It is possible call "getCart()" here because it is a "serverAction".
     queryFn: () => getCart(),
   });
+
+  // if (isError) {
+  //   return <Link href="/"></Link>;
+  // }
+
   return (
     <Sheet>
       <SheetTrigger asChild>

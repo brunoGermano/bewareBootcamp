@@ -4,7 +4,7 @@ import { productTable, productVariantTable } from "@/db/schema";
 
 import ProductItem from "./product-item";
 
-// Creates an interface that will define the list of props which this component will receive
+// Creates an interface that will define types for the list of props which this component will receive
 interface ProductListProps {
   title: string;
   products: (typeof productTable.$inferSelect & {

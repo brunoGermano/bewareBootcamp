@@ -47,7 +47,9 @@ export const Header = () => {
                           src={session?.user?.image as string | undefined}
                         />
                         <AvatarFallback>
+                          {/* taking the first letter of the name */}
                           {session?.user?.name?.split(" ")?.[0]?.[0]}
+                          {/* taking the first letter of the surname */}
                           {session?.user?.name?.split(" ")?.[1]?.[0]}
                         </AvatarFallback>
                       </Avatar>

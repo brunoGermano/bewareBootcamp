@@ -31,6 +31,7 @@ const AddToCartButton = ({
       }),
     onSuccess: () => {
       // the "invalidateQueries" method orders the reactQuery do all the queries that have the key "cart" again, so the new products added will appear immediately on the cart. From one component you can update the other one. The "onSuccess" function only execute if the mutation work successfully.
+      // SO from differents components it is possible update datas in other components which use this datas as well.
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
   });

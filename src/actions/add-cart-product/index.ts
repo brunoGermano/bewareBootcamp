@@ -1,4 +1,5 @@
-"use server";
+"use server"; // Transform this in a "server action" which will run on the server side
+
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 
@@ -8,11 +9,11 @@ import { auth } from "@/lib/auth";
 
 import { AddProductToCartSchema, addProductToCartSchema } from "./schema";
 
-// it will define this file being a SERVER ACTION
+// it will define this file being a SERVER ACTION an it will be an API route from client to the server when the "adicionar a sacola" button is pressed.
 export const addProductToCart = async (data: AddProductToCartSchema) => {
   // Needded to make validations here. So It is used "AddProductToCartSchema" to verify is "uuid" is valid and the "quantity" is a number with at least the value "1", both them defined in the interface "AddProductToCartSchema".
 
-  //   Verifying if the data is valid
+  // Verifying if the data is valid, if not that "parse" function will throw an exception.
   addProductToCartSchema.parse(data);
 
   // Verifying user session. Validating session from Better Auth

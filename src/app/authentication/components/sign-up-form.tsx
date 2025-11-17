@@ -36,7 +36,7 @@ const formSchema = z
     passwordConfirmation: z.string("Senha inválida.").min(8, "Senha inválida."),
   })
   .refine(
-    // Refine method creates a conditional validation for fieds that depends from other one in the same form, for example, in this case, check if "password" e "passwordConfirmation" are equal.
+    // Refine method creates a conditional validation for fields that depends from other one in the same form, for example, in this case, check if "password" e "passwordConfirmation" are equal.
     (data) => {
       // returning "true", means it is all right with the confirmation
       return data.password === data.passwordConfirmation;

@@ -170,7 +170,7 @@ export const shippingAddressRelations = relations(
       references: [userTable.id],
     }),
 
-    // A shippingAddress always belongs to a cart no more than one. Therefore, a user only has a cart in our app.
+    // A shippingAddress always belongs to a cart no more than one. Therefore, a user only has one cart in our app.
     cart: one(cartTable, {
       fields: [shippingAddressTable.id],
       references: [cartTable.shippingAddressId],
@@ -185,7 +185,7 @@ export const cartTable = pgTable("cart", {
     .references(() => userTable.id, { onDelete: "cascade" }),
   shippingAddressId: uuid("shipping_address_id").references(
     () => shippingAddressTable.id,
-    { onDelete: "set null" },
+    { onDelete: "set null" }, // If shippingAddressId is deleted the cart is setted with null, so the user can choice another address for deliveries
   ),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
@@ -211,7 +211,7 @@ export const cartItemTable = pgTable("cart_item", {
   id: uuid().primaryKey().defaultRandom(),
   cartId: uuid("cart_id")
     .notNull()
-    .references(() => cartTable.id, { onDelete: "cascade" }),
+    .references(() => cartTable.id, { onDelete: "cascade" }),// if cart is deleted, the cart must also be deleted 
   productVariantId: uuid("product_variant_id")
     .notNull()
     .references(() => productVariantTable.id, { onDelete: "cascade" }),
