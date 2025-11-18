@@ -3,6 +3,7 @@ import { MinusIcon, PlusIcon, TrashIcon } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
 
+import { addProductToCart } from "@/actions/add-cart-product";
 import { decreaseCartProductQuantity } from "@/actions/decrease-cart-product-quantity";
 import { removeProductFromCart } from "@/actions/remove-cart-product";
 import { formatCentsToBRL } from "@/helpers/money";
@@ -12,6 +13,7 @@ import { Button } from "../ui/button";
 interface CartItemProps {
   id: string;
   productName: string;
+  productVariantId: string;
   productVariantName: string;
   productVariantImageUrl: string;
   productVariantPriceInCents: number;
@@ -21,6 +23,7 @@ interface CartItemProps {
 const CartItem = ({
   id,
   productName,
+  productVariantId,
   productVariantName,
   productVariantImageUrl,
   productVariantPriceInCents,
@@ -46,6 +49,14 @@ const CartItem = ({
       queryClient.invalidateQueries({queryKey: ["cart"]});
     },
   });
+
+  const increaseCartProductQuantityMutation = useMutation({
+    mutationKey: ["increase-cart-product-quantity"],
+    mutationFn: () => addProductToCart({productVariantId: productVariantId, quantity: 1}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ["cart"]});
+    },
+  })
   
   const handleDeleteClick = () => {
     removeProductFromCartMutation.mutate(undefined, {
@@ -66,6 +77,13 @@ const CartItem = ({
     });
   };
 
+  const handleIncreaseQuantityClick = () => {
+    increaseCartProductQuantityMutation.mutate(undefined, {
+      onSuccess: () => {
+        toast.success("Quantidade de produto aumentada.");
+      },
+    });
+  };
 
   return (
     <div className="flex items-center justify-between">
@@ -88,7 +106,7 @@ const CartItem = ({
               <MinusIcon />
             </Button>
             <p className="text-xs font-medium">{quantity}</p>
-            <Button className="h-4 w-4" variant="ghost" onClick={() => {}}>
+            <Button className="h-4 w-4" variant="ghost" onClick={handleIncreaseQuantityClick}>
               <PlusIcon />
             </Button>
           </div>
