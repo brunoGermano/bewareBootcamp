@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import { getCart } from "@/actions/get-cart";
 import { formatCentsToBRL } from "@/helpers/money";
+import { useCart } from "@/hooks/queries/use-cart";
 
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
@@ -21,23 +22,8 @@ import {
 import CartItem from "./cart-item";
 
 const Cart = () => {
-  // Using the react-query here, uses like a father on the layout.tsx from app folder
-  // A query is a call that obtain datas
-  const {
-    data: cart,
-    isPending: cartIsLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["cart"],
-
-    // "queryFn" is a function that fetch the datas from the cart which is in the server since this file is a "client component".
-    //  Since a "serverAction" is a kind of HTTP route accssing an API, so It is possible call "getCart()" here because it is a "serverAction".
-    queryFn: () => getCart(),
-  });
-
-  // if (isError) {
-  //   return <Link href="/"></Link>;
-  // }
+  
+  const { data: cart } = useCart();
 
   return (
     <Sheet>
