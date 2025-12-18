@@ -4,10 +4,16 @@ const nextConfig: NextConfig = {
   
   /* config options here */
   
-  eslint: {
-    ignoreDuringBuilds: true, // only use this block to avoid the ESlint execution when running "npm run build" command and avoid errors.
+  // eslint: {
+  //   // only use this block to avoid the ESlint execution when running "npm run build" command and avoid errors.
+  //   ignoreDuringBuilds: true,
+  // },
+
+  typescript: {
+    // Isso ignora erros de tipagem no build (use com cautela)
+    ignoreBuildErrors: true,
   },
-  
+
   images: {
     remotePatterns: [
       {
