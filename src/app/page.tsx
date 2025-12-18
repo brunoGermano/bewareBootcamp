@@ -5,12 +5,11 @@ import CategorySelector from "@/components/common/category-selector";
 import Footer from "@/components/common/footer";
 import { Header } from "@/components/common/header";
 import ProductList from "@/components/common/product-list";
-import { Button } from "@/components/ui/button";
 import { db } from "@/db";
 import { productTable } from "@/db/schema";
 
 const Home = async () => {
-  const products = await db.query.productTable.findMany({
+   const products = await db.query.productTable.findMany({
     with: {
       variants: true,
     },
