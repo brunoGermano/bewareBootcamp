@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
 import { db } from "@/db";
@@ -42,6 +43,15 @@ export const createShippingAddress = async (
       cpfOrCnpj: data.cpf,
     })
     .returning();
+
+    /** I will use "revalidatePath" to clean the cache from the 
+     * server component called "page.tsx" which is used on 
+     * the path given by "/cart/identification", 
+     * it will happen each time that the table "shippingAddressTable" 
+     * in my data base was modified. So the server component from the path given 
+     * by "/cart/identification" will have the new data refreshed. */
+    revalidatePath("/cart/identification");
+
 
   return shippingAddress;
 };

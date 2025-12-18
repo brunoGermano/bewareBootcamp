@@ -20,6 +20,7 @@ export const getCart = async () => {
   const cart = await db.query.cartTable.findFirst({
     where: (cart, { eq }) => eq(cart.userId, session.user.id),
     with: {
+      shippingAddress: true,
       items: {
         with: {
           productVariant: {
@@ -44,6 +45,7 @@ export const getCart = async () => {
       ...newCart,
       items: [], // Since this cart is NEW there is no items in it, so the "items" array is empty too because the newCart is empty.
       totalPriceInCents: 0,
+      shippingAddress: null,
     };
   }
   return {
