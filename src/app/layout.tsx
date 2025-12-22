@@ -33,7 +33,7 @@ export default function RootLayout({
       >
         {/* It is possible have a clientComponent like "ReactQueryProvider" and renders a "serverComponent" inside it only if the serverComponent were passed like prop children to this clientComponent like in this case here. This is a hack of the Next.js that it is important to know. */}
         <ReactQueryProvider>{children}</ReactQueryProvider>
-        <Toaster />
+        <Toaster position="top-center" richColors /> {/* makes the user message appears on the top of the screen */}
       </body>
     </html>
   );
