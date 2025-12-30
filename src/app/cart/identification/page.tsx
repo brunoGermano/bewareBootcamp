@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import Footer from "@/components/common/footer";
 import { Header } from "@/components/common/header";
 import { db } from "@/db";
-import { cartTable, shippingAddressTable } from "@/db/schema";
+import { shippingAddressTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
 import CartSummary from "../components/cart-summary";
@@ -13,50 +13,50 @@ import Addresses from "./components/addresses";
 
 const IdentificationPage = async () => {
     
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
+  const session = await auth.api.getSession({
+      headers: await headers(),
+  });
 
-    if(!session?.user.id){
-        // Send the user to home, It doesn't need the "return" because "redirect" already exits the component "IdentificationPage" here.
-        redirect("/");
-    }
+  if(!session?.user.id){
+      // Send the user to home, It doesn't need the "return" because "redirect" already exits the component "IdentificationPage" here.
+      redirect("/");
+  }
 
-    const cart = await db.query.cartTable.findFirst({
-        where: (cart, { eq }) => eq(cart.userId, session.user.id),
-        with:{
-            shippingAddress: true,
-            items: {
-                with: {
-                    productVariant: {
-                        with: {
-                            product: true,
-                        },
-                    },
-                },
-            },
-        },
-    });
+  const cart = await db.query.cartTable.findFirst({
+      where: (cart, { eq }) => eq(cart.userId, session.user.id),
+      with:{
+          shippingAddress: true,
+          items: {
+              with: {
+                  productVariant: {
+                      with: {
+                          product: true,
+                      },
+                  },
+              },
+          },
+      },
+  });
 
-    // console.log(cart)
-    // console.log(cart?.items.length)
+  // console.log(cart)
+  // console.log(cart?.items.length)
 
-    // If there is no cart or even products in the cart, the user should be redirected to the home page.
-    if( !cart || cart?.items.length === 0 ){
-        redirect("/");
-    }
+  // If there is no cart or even products in the cart, the user should be redirected to the home page.
+  if( !cart || cart?.items.length === 0 ){
+      redirect("/");
+  }
 
-    const shippingAddresses = await db.query.shippingAddressTable.findMany({
-        where: eq(shippingAddressTable.userId, session.user.id),
-    });
+  const shippingAddresses = await db.query.shippingAddressTable.findMany({
+      where: eq(shippingAddressTable.userId, session.user.id),
+  });
 
-    const cartTotalInCents = cart.items.reduce(
-        (acc, item) => acc + item.productVariant.priceInCents * item.quantity,
-        0,
-    );
+  const cartTotalInCents = cart.items.reduce(
+      (acc, item) => acc + item.productVariant.priceInCents * item.quantity,
+      0,
+  );
 
-    return (
-    <div className="space-y-12">
+  return (
+    <div>
       <Header />
       <div className="space-y-4 px-5">
         <Addresses
@@ -76,7 +76,9 @@ const IdentificationPage = async () => {
           }))}
         />
       </div>
-      <Footer />
+      <div className="mt-12">
+        <Footer />
+      </div>
     </div>
   );
 };
