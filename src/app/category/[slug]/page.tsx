@@ -19,6 +19,7 @@ const CategoryPage = async ({ params }: CategoryPageProps) => {
     //"notFound()" function sends the user to 404 page
     return notFound();
   }
+  // If You have the category, you can get its products.
   const products = await db.query.productTable.findMany({
     where: eq(productTable.categoryId, category.id),
     with: { variants: true },

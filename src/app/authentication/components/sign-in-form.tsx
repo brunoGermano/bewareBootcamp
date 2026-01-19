@@ -134,7 +134,7 @@ const SignInForm = () => {
                 variant="outline"
                 className="w-full"
                 onClick={handleSignInWithGoogle}
-                type="button"
+                type="button" /* This type prevent to send the form*/
               >
                 {/* THis "svg" tag creates a Google icon. */}
                 <svg viewBox="0 0 24 24" className="h-4 w-4">

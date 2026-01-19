@@ -29,7 +29,7 @@ const ProductItem = ({ product, textContainerClassName }: ProductItemProps) => {
         width={0}
         className="h-auto w-full rounded-3xl"
       />
-      {/*  The "div" below will define the width and the "Image" above will follow this width. */}
+      {/*  The "div" below will define the WIDTH of the item and the "Image" above will FOLLOW this width. */}
       <div
         className={cn(
           "flex max-w-[200px] flex-col gap-1",
